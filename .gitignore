@@ -118,3 +118,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Project-specific
+app-secret.json
+user-secret.json
