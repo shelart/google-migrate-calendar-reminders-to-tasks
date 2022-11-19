@@ -1,0 +1,19 @@
+{
+  "name": "google-migrate-calendar-reminders-to-tasks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsc && node --experimental-json-modules --experimental-specifier-resolution=node ./dist/main.js"
+  },
+  "keywords": [],
+  "author": "Arturas Shelekhov-Balchiunas",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.11.9"
+  },
+  "dependencies": {
+    "typescript": "^4.9.3"
+  }
+}
