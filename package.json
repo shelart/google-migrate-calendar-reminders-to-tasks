@@ -5,7 +5,7 @@
   "main": "dist/main.js",
   "type": "module",
   "scripts": {
-    "start": "tsc && node --experimental-json-modules --experimental-specifier-resolution=node ./dist/main.js"
+    "main": "tsc && node --experimental-json-modules --experimental-specifier-resolution=node ./dist/main.js"
   },
   "keywords": [],
   "author": "Arturas Shelekhov-Balchiunas",
@@ -14,7 +14,9 @@
     "@types/node": "^18.11.9"
   },
   "dependencies": {
+    "@types/yargs": "^17.0.13",
     "axios": "^1.1.3",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.3",
+    "yargs": "^17.6.2"
   }
 }
