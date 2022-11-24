@@ -122,3 +122,4 @@ dist
 # Project-specific
 app-secret.json
 user-secret.json
+prepared.json
