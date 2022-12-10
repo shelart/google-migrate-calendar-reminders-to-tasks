@@ -82,7 +82,7 @@ export default async function (): Promise<void> {
             redirect_uri: `http://127.0.0.1:${listenPort}`,
             response_type: 'code',
             scope: [
-                'https://www.googleapis.com/auth/calendar.events.readonly',
+                'https://www.googleapis.com/auth/reminders',
                 'https://www.googleapis.com/auth/tasks',
             ].join(' '),
             code_challenge: codeChallenge,
