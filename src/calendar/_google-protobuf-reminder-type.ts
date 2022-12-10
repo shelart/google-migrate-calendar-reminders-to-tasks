@@ -13,7 +13,7 @@ export type GoogleProtobufReminder = {
             3: number; // second
         }
     };
-    11?: number; // remind at timestamp (msec)
+    11?: string; // remind at timestamp (msec)
     8?: number; // done (1 - done, other or absent - not done)
-    18: number; // creation timestamp (msec)
+    18: string; // creation timestamp (msec)
 }

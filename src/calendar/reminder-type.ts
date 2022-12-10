@@ -12,7 +12,7 @@ export class Reminder {
         try {
             this.id = protobufReminder['1']['2'];
             this.title = protobufReminder['3'];
-            this.createdAt = new Date(protobufReminder['18']);
+            this.createdAt = new Date(parseInt(protobufReminder['18'], 10));
             if (protobufReminder['5']) {
                 this.remindAt = new Date(
                     protobufReminder['5']['1'],
@@ -30,7 +30,7 @@ export class Reminder {
                     this.entireDay = true;
                 }
             } else if (protobufReminder['11']) {
-                this.remindAt = new Date(protobufReminder['11']);
+                this.remindAt = new Date(parseInt(protobufReminder['11'], 10));
                 this.entireDay = false;
             } else {
                 throw new Error('Could not find when to remind!');
