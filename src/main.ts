@@ -45,6 +45,10 @@ const args = yargs(hideBin(process.argv))
                 parseDate(argv.till),
                 argv.step * 24 * 3600 * 1000
             );
+
+            console.log(`Sorting ${reminders.length} reminders...`);
+            reminders.sort((r1, r2) => r1.remindAt.getTime() - r2.remindAt.getTime());
+
             console.log(`Preparing ${reminders.length} reminders...`);
             fs.writeFileSync('prepared.json', JSON.stringify(reminders, null, 2));
         })
