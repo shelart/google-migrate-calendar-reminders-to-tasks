@@ -3,6 +3,7 @@ import {hideBin} from 'yargs/helpers';
 import authenticate from './auth/request-token';
 import getReminders from './calendar/get-reminders';
 import fs from 'fs';
+import {Reminder} from './calendar/reminder-type';
 
 const args = yargs(hideBin(process.argv))
     .command('auth', 'Perform OAuth 2.0 flow and store the token for this application.', authenticate)
@@ -50,7 +51,26 @@ const args = yargs(hideBin(process.argv))
             reminders.sort((r1, r2) => r1.remindAt.getTime() - r2.remindAt.getTime());
 
             console.log(`Preparing ${reminders.length} reminders...`);
-            fs.writeFileSync('prepared.json', JSON.stringify(reminders, null, 2));
+            // Segregate recurring & normal reminders.
+            const preparedReminders = {
+                normal: [] as Reminder[],
+                recurring: {} as { [mainEventId: string]: Reminder[] },
+            };
+            for (const reminder of reminders) {
+                if (!reminder.recurring) {
+                    preparedReminders.normal.push(reminder);
+                } else {
+                    if (!preparedReminders.recurring[reminder.recurring.mainEventId]) {
+                        preparedReminders.recurring[reminder.recurring.mainEventId] = [];
+                    }
+                    preparedReminders.recurring[reminder.recurring.mainEventId].push(reminder);
+                }
+            }
+            const numRecurringEvents = Object.entries(preparedReminders.recurring).length;
+            if (numRecurringEvents) {
+                console.warn(`Found ${numRecurringEvents} recurring reminders which migration is not supported yet!`);
+            }
+            fs.writeFileSync('prepared.json', JSON.stringify(preparedReminders, null, 2));
         })
     .help()
     .argv;
