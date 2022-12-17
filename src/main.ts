@@ -4,6 +4,8 @@ import authenticate from './auth/request-token';
 import getReminders from './calendar/get-reminders';
 import fs from 'fs';
 import {Prepared} from './_prepared-type';
+import getTasksLists from './tasks/get-tasks-lists';
+import {TasksList} from './tasks/tasks-list-type';
 
 const args = yargs(hideBin(process.argv))
     .command('auth', 'Perform OAuth 2.0 flow and store the token for this application.', authenticate)
@@ -30,6 +32,13 @@ const args = yargs(hideBin(process.argv))
                     default: 30,
                     description: 'Step (in days) for a loop, within which Google API would be requested to return all reminders created before an iterated date.',
                 },
+                'map-to-tasks-list-id': {
+                    type: 'string',
+                    default: null,
+                    description: 'ID of Google Tasks List which to map all reminders to.\n'
+                        + 'Run the command tasks-lists in order to get all Google Tasks Lists in stdout,'
+                        + ' or run this command without this option to get all Google Tasks Lists in the prepared.json file.',
+                },
             });
         },
         async (argv) => {
@@ -47,15 +56,27 @@ const args = yargs(hideBin(process.argv))
                 argv.step * 24 * 3600 * 1000
             );
 
+            const tasksLists = await getTasksLists();
+            const tasksListsMap: { [id: string] : TasksList } = {};
+            for (const tasksList of tasksLists) {
+                tasksListsMap[tasksList.id] = tasksList;
+            }
+
+            const mapTo: string | null = argv['map-to-tasks-list-id'];
+
             console.log(`Preparing ${reminders.length} reminders...`);
             // Segregate recurring & normal reminders.
             const preparedReminders: Prepared = {
+                tasksLists,
                 normal: [],
                 recurring: {},
             };
             for (const reminder of reminders) {
                 if (!reminder.recurring) {
-                    preparedReminders.normal.push(reminder);
+                    preparedReminders.normal.push({
+                        reminder,
+                        tasksList: mapTo ? tasksListsMap[mapTo] : null,
+                    });
                 } else {
                     if (!preparedReminders.recurring[reminder.recurring.mainEventId]) {
                         preparedReminders.recurring[reminder.recurring.mainEventId] = [];
@@ -69,9 +90,15 @@ const args = yargs(hideBin(process.argv))
             }
 
             console.log(`Sorting ${preparedReminders.normal.length} normal reminders...`);
-            preparedReminders.normal.sort((r1, r2) => r1.remindAt.getTime() - r2.remindAt.getTime());
+            preparedReminders.normal.sort((r1, r2) =>
+                r1.reminder.remindAt.getTime() - r2.reminder.remindAt.getTime());
 
             fs.writeFileSync('prepared.json', JSON.stringify(preparedReminders, null, 2));
+        })
+    .command('tasks-lists', 'Download Google Tasks Lists and print them to stdout.',
+        yargs => {},
+        async (argv) => {
+            console.log(await getTasksLists());
         })
     .help()
     .argv;
