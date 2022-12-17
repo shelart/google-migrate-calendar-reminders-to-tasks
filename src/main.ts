@@ -33,13 +33,6 @@ const args = yargs(hideBin(process.argv))
                     default: 30,
                     description: 'Step (in days) for a loop, within which Google API would be requested to return all reminders created before an iterated date.',
                 },
-                'map-to-tasks-list-id': {
-                    type: 'string',
-                    default: null,
-                    description: 'ID of Google Tasks List which to map all reminders to.\n'
-                        + 'Run the command tasks-lists in order to get all Google Tasks Lists in stdout,'
-                        + ' or run this command without this option to get all Google Tasks Lists in the prepared.json file.',
-                },
             });
         },
         async (argv) => {
@@ -63,8 +56,6 @@ const args = yargs(hideBin(process.argv))
                 tasksListsMap[tasksList.id] = tasksList;
             }
 
-            const mapTo: string | null = argv['map-to-tasks-list-id'];
-
             console.log(`Preparing ${reminders.length} reminders...`);
             // Segregate recurring & normal reminders.
             const preparedReminders: Prepared = {
@@ -76,7 +67,7 @@ const args = yargs(hideBin(process.argv))
                 if (!reminder.recurring) {
                     preparedReminders.normal.push({
                         reminder,
-                        tasksList: mapTo ? tasksListsMap[mapTo] : null,
+                        tasksList: null,
                         task: new Task(reminder),
                     });
                 } else {
