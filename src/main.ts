@@ -3,7 +3,7 @@ import {hideBin} from 'yargs/helpers';
 import authenticate from './auth/request-token';
 import getReminders from './calendar/get-reminders';
 import fs from 'fs';
-import {Reminder} from './calendar/reminder-type';
+import {Prepared} from './_prepared-type';
 
 const args = yargs(hideBin(process.argv))
     .command('auth', 'Perform OAuth 2.0 flow and store the token for this application.', authenticate)
@@ -52,9 +52,9 @@ const args = yargs(hideBin(process.argv))
 
             console.log(`Preparing ${reminders.length} reminders...`);
             // Segregate recurring & normal reminders.
-            const preparedReminders = {
-                normal: [] as Reminder[],
-                recurring: {} as { [mainEventId: string]: Reminder[] },
+            const preparedReminders: Prepared = {
+                normal: [],
+                recurring: {},
             };
             for (const reminder of reminders) {
                 if (!reminder.recurring) {
