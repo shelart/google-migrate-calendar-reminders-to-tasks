@@ -47,9 +47,6 @@ const args = yargs(hideBin(process.argv))
                 argv.step * 24 * 3600 * 1000
             );
 
-            console.log(`Sorting ${reminders.length} reminders...`);
-            reminders.sort((r1, r2) => r1.remindAt.getTime() - r2.remindAt.getTime());
-
             console.log(`Preparing ${reminders.length} reminders...`);
             // Segregate recurring & normal reminders.
             const preparedReminders: Prepared = {
@@ -70,6 +67,10 @@ const args = yargs(hideBin(process.argv))
             if (numRecurringEvents) {
                 console.warn(`Found ${numRecurringEvents} recurring reminders which migration is not supported yet!`);
             }
+
+            console.log(`Sorting ${preparedReminders.normal.length} normal reminders...`);
+            preparedReminders.normal.sort((r1, r2) => r1.remindAt.getTime() - r2.remindAt.getTime());
+
             fs.writeFileSync('prepared.json', JSON.stringify(preparedReminders, null, 2));
         })
     .help()
