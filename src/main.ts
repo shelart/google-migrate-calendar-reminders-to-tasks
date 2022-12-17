@@ -6,6 +6,7 @@ import fs from 'fs';
 import {Prepared} from './_prepared-type';
 import getTasksLists from './tasks/get-tasks-lists';
 import {TasksList} from './tasks/tasks-list-type';
+import {Task} from './tasks/task-type';
 
 const args = yargs(hideBin(process.argv))
     .command('auth', 'Perform OAuth 2.0 flow and store the token for this application.', authenticate)
@@ -76,6 +77,7 @@ const args = yargs(hideBin(process.argv))
                     preparedReminders.normal.push({
                         reminder,
                         tasksList: mapTo ? tasksListsMap[mapTo] : null,
+                        task: new Task(reminder),
                     });
                 } else {
                     if (!preparedReminders.recurring[reminder.recurring.mainEventId]) {
