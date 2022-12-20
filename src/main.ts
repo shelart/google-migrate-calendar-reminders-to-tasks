@@ -59,7 +59,6 @@ const args = yargs(hideBin(process.argv))
             console.log(`Preparing ${reminders.length} reminders...`);
             // Segregate recurring & normal reminders.
             const preparedReminders: Prepared = {
-                tasksLists,
                 normal: [],
                 recurring: {},
             };

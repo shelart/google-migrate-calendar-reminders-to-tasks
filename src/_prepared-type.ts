@@ -9,7 +9,6 @@ type Transformation = {
 }
 
 export type Prepared = {
-    tasksLists: TasksList[];
     normal: Transformation[];
     recurring: { [mainEventId: string]: Reminder[] };
 }
