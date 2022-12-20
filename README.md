@@ -11,4 +11,4 @@ user) Tasks list, not giving you much choice.
 
 Unlike that officially provided migration way, this project grants you much
 more control on what Reminders you'd like to migrate, and to what Tasks lists.
-And it still provides you a convenient automation for batch processes!
+And it still provides you a flexible automation for batch processes!
