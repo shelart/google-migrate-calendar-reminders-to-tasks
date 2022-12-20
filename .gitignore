@@ -123,3 +123,5 @@ dist
 app-secret.json
 user-secret.json
 prepared.json
+postpared.json
+result.json
