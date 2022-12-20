@@ -18,7 +18,7 @@ const args = yargs(hideBin(process.argv))
             return yargs.options({
                 'from': {
                     type: 'string',
-                    default: '2016-01-01',
+                    default: '2010-01-01',
                     description: 'Starting date for a loop, within which Google API would be requested to return all reminders created before an iterated date.'
                         + ' Must be in format: YYYY-MM-DD.',
                 },
