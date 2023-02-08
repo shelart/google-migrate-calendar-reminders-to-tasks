@@ -6,9 +6,8 @@ import loadAuthToken from '../auth/load-auth-token';
 import axios from 'axios';
 import {GoogleProtobufRemindersList} from './_google-protobuf-reminders-list-type';
 import {Reminder} from './reminder-type';
-import {Token} from '../auth/token-type';
 
-const loadRemindersCreatedBefore = async function(authToken: Token, createdBefore: Date): Promise<Reminder[]> {
+const loadRemindersCreatedBefore = async function(authToken: string, createdBefore: Date): Promise<Reminder[]> {
     let responseBody, httpStatus;
     try {
         const {data, status} = await axios.post<GoogleProtobufRemindersList>(
@@ -20,10 +19,10 @@ const loadRemindersCreatedBefore = async function(authToken: Token, createdBefor
             }),
             {
                 params: {
-                    access_token: authToken.access_token,
+                    access_token: authToken,
                 },
                 headers: {
-                    'Authorization': `Bearer ${authToken.access_token}`,
+                    'Authorization': `Bearer ${authToken}`,
                     'Content-Type': 'application/json+protobuf',
                     'Accept': 'application/json',
                 },
@@ -49,7 +48,8 @@ const loadRemindersCreatedBefore = async function(authToken: Token, createdBefor
 }
 
 export default async function(from: Date, till: Date, stepMillis: number): Promise<Reminder[]> {
-    const authToken = await loadAuthToken();
+    const client = await loadAuthToken();
+    const authToken = (await client.getAccessToken()).token!;
     let result: { [id: string] : Reminder } = {};
     for (
         let loadBefore = from;

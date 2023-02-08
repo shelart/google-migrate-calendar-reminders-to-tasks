@@ -1,23 +1,23 @@
-import {Token} from './token-type';
+import {google} from 'googleapis';
 import fs from 'fs';
-import authenticate from './request-token';
-import refreshToken from './_refresh-token';
-import {AppCredentials} from './_app-credentials-type';
+import requestToken from './request-token';
+import {OAuth2Client} from 'google-auth-library/build/src/auth/oauth2client';
 
 const fileNameToken = 'user-secret.json';
 
-export default async function(): Promise<Token> {
-    if (!fs.existsSync(fileNameToken)) {
-        await authenticate();
+const loadFromFile = function(): OAuth2Client | null {
+    try {
+        return google.auth.fromJSON(JSON.parse(fs.readFileSync(fileNameToken, {encoding: 'utf8'}))) as OAuth2Client;
+    } catch (e) {
+        return null;
     }
+}
 
-    const token: Token = JSON.parse(fs.readFileSync(fileNameToken, {encoding: 'utf8'}));
-    const now = new Date().getTime();
-    if (token.expires_at < now) {
-        const appCredentialsRaw = fs.readFileSync('app-secret.json', 'utf8');
-        const appCredentials = JSON.parse(appCredentialsRaw) as AppCredentials;
-        return await refreshToken(token.refresh_token, appCredentials);
+export default async function(): Promise<OAuth2Client> {
+    let client = loadFromFile();
+    if (client) {
+        return client;
     } else {
-        return token;
+        return await requestToken();
     }
 }

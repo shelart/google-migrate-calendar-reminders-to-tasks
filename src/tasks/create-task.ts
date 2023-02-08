@@ -3,7 +3,8 @@ import axios from 'axios';
 import {Task} from './task-type';
 
 export default async function(tasksListID: string, task: Task): Promise<Task> {
-    const authToken = await loadAuthToken();
+    const client = await loadAuthToken();
+    const authToken = (await client.getAccessToken()).token!;
 
     let responseBody, httpStatus;
     try {
@@ -12,7 +13,7 @@ export default async function(tasksListID: string, task: Task): Promise<Task> {
             task,
             {
                 headers: {
-                    'Authorization': `Bearer ${authToken.access_token}`,
+                    'Authorization': `Bearer ${authToken}`,
                     'Accept': 'application/json',
                 },
             }

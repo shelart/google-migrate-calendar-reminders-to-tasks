@@ -7,7 +7,8 @@ import axios from 'axios';
 import {Reminder} from './reminder-type';
 
 export default async function(reminder: Reminder): Promise<void> {
-    const authToken = await loadAuthToken();
+    const client = await loadAuthToken();
+    const authToken = (await client.getAccessToken()).token!;
 
     let responseBody, httpStatus;
     try {
@@ -22,10 +23,10 @@ export default async function(reminder: Reminder): Promise<void> {
             }),
             {
                 params: {
-                    access_token: authToken.access_token,
+                    access_token: authToken,
                 },
                 headers: {
-                    'Authorization': `Bearer ${authToken.access_token}`,
+                    'Authorization': `Bearer ${authToken}`,
                     'Content-Type': 'application/json+protobuf',
                 },
             }

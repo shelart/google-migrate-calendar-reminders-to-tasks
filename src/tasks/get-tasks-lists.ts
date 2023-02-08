@@ -8,7 +8,7 @@ type GoogleTasksListsPage = {
     items: TasksList[];
 };
 
-const loadTasksLists = async function(authToken: Token, pageToken?: string): Promise<GoogleTasksListsPage> {
+const loadTasksLists = async function(authToken: string, pageToken?: string): Promise<GoogleTasksListsPage> {
     let responseBody, httpStatus;
     try {
         const {data, status} = await axios.get<GoogleTasksListsPage>(
@@ -19,7 +19,7 @@ const loadTasksLists = async function(authToken: Token, pageToken?: string): Pro
                     pageToken,
                 },
                 headers: {
-                    'Authorization': `Bearer ${authToken.access_token}`,
+                    'Authorization': `Bearer ${authToken}`,
                     'Accept': 'application/json',
                 },
             }
@@ -39,7 +39,8 @@ const loadTasksLists = async function(authToken: Token, pageToken?: string): Pro
 }
 
 export default async function(): Promise<TasksList[]> {
-    const authToken = await loadAuthToken();
+    const client = await loadAuthToken();
+    const authToken = (await client.getAccessToken()).token!;
 
     let result: TasksList[] = [];
     let nextPageToken: string | undefined;
